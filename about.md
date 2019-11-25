@@ -7,7 +7,7 @@ permalink: /about/
 
 
 <div>
-<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi I'm Jeremie and I live in London. I play gypsy jazz, write code, and like computational stats & machine learning.</p>
+<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I play gypsy jazz, write code, and like computational stats & machine learning.</p>
 </div>
 
 
