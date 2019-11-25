@@ -1,0 +1,38 @@
+---
+---
+
+@import "whiteglass";
+
+
+table, h1, h2, h3, h4, h5, h6, p, blockquote, pre, ul, ol, dl, figure, .highlight {
+  margin-bottom: 15px;
+  line-height: 1.58;
+  font-size: 21px;
+  font-family: 'medium-content-serif-font, Georgia, Cambria, "Times New Roman", Times, serif';
+}
+
+.about_image{
+  width: 150px;
+}
+.image-left {
+  display: block;
+  margin-left: auto;
+  margin-right: 10px;
+  float: left;
+}
+
+@media(min-width:591px) and (max-width:697px){
+  .about_bio {
+    margin-bottom: 50px
+  }
+}
+@media(min-width:698px){
+  .about_bio {
+    margin-bottom: 100px
+  }
+}
+@media(max-width: 590px){
+  .about_image{
+    width: 120px;
+  }
+}

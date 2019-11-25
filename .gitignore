@@ -1,0 +1,8 @@
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
+run_local_server.sh
+.DS_Store
+
