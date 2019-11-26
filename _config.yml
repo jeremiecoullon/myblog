@@ -27,6 +27,7 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 github_username:  jeremicoullon
 comments: true
+google_analytics: UA-62559170-3
 
 # Build settings
 theme: jekyll-whiteglass
