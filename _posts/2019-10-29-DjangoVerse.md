@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "The DjangoVerse"
-date: 2019-10-29 18:01:52 +0000
+date: 2019-11-27 15:01:52 +0000
 categories: programming design gypsyjazz
 ---
 
@@ -71,3 +71,5 @@ Other examples of very well designed graphs are the ones built by [concept.space
 Notice also the minimap in the lower right hand corner that reminds you of where you currently are in the map. Finally, it seems that they have automated the process of adding and clustering the papers (from looking at the software [credited](http://philosophies.space/credits/) on their website). They seemed to have scraped [PhilPapers](https://philpapers.org/), used [Word2Vec](https://code.google.com/archive/p/word2vec/) to get word embeddings for each paper, [reduced the dimension](https://github.com/lmcinnes/umap) of the space, and finally [clustered](https://hdbscan.readthedocs.io/en/latest/) the result to find the location of each paper in the 2 dimensional map. As a result they could then use this workflow to create a similar map for [climate science](http://map.climate.space/) and [biomedicine](http://concept.space/projects/biomap/).
 
 In conclusion, the idea of a visual map showing the links between different things in a discipline (players in gypsy jazz, papers in philosophy, etc..) is a very appealing one. However, getting it right is surprisingly difficult; for me the best example is the map of philosophy described above.
+
+<i>Thanks for <a href="https://www.lukas.derungs.de/">Lukas DeRungs</a> for reading a draft of this post</i>
