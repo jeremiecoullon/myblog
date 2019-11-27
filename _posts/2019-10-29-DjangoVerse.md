@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "The DjangoVerse"
-date: 2019-11-27 15:01:52 +0000
+date: 2019-11-27 11:01:52 +0000
 categories: programming design gypsyjazz
 ---
 
