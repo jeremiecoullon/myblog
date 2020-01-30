@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Testing MCMC code: the prior reproduction test"
-date: 2020-01-20 11:00:00 +0000
+date: 2030-01-20 11:00:00 +0000
 categories: MCMC statistics programming
 ---
 
