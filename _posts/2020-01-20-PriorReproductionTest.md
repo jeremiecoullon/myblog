@@ -71,7 +71,7 @@ for elem in range(B):
 	# add a Gaussian proposal
 	mcmc_sampler.move = GaussianMove(ICs, cov=sd_proposal)
 
-	# Get a posterior sample. 
+	# Get a posterior sample.
 	# Let the sampler run for 200 iterations to make sure it's independent from the initial condition
 	mcmc_sampler.run(n_iter=200, print_rate=300)
 	last_sample = mcmc_sampler.all_samples.iloc[-1].theta
@@ -90,7 +90,7 @@ We then check that the posterior samples are uniformly distributed (ie: the prio
 
 Note how we let the sampler run for 200 iterations to make sure that the posterior sample we get is independent of the initial condition. The number of iterations used needs to be tuned to the sampler; if it's slow then you'll need more samples! this means that the PRT will become more computationall expensive. We also needed to tune the proposal variance in the Gaussian proposal (called `sd_proposal`); ideally this will be a good tuning for any dataset generated in the PRT, but this may not always be the case! Sometimes the sampler needs hand tuning for each generated dataset; in this case it may also be too expensive to run the entire test. We'll see later what other tests we can do in this case.
 
-Finally, how do we choose the number of data to generate (here we chose `10` datapoints) ? Consider 2 extremes: if we choose too much data then the posterior will have a very low variance and will be centered around the true parameter. So the posterior sample we obtain will be pretty much the true parameter we sampled from the prior, and the PRT will (trivially) produce samples from the prior. This however doesn't test the statistical properties of the sampler, but rather than the posterior mean is the true parameter. In the other extreme case, if we have too little data the likelihood will have a weak effect on the posterior which will essentially be the prior. The MCMC sampler will then sample from what is very close to prior, and again we are not testing our code. We need to choose somewhere in the middle so that the PRT tests the higher order moments of the posterior. 
+Finally, how do we choose the number of data to generate (here we chose `10` datapoints) ? Consider 2 extremes: if we choose too much data then the posterior will have a very low variance and will be centered around the true parameter. So the posterior sample we obtain will be pretty much the true parameter we sampled from the prior, and the PRT will (trivially) produce samples from the prior. This however doesn't test the statistical properties of the sampler, but rather than the posterior mean is the true parameter. In the other extreme case, if we have too little data the likelihood will have a weak effect on the posterior which will essentially be the prior. The MCMC sampler will then sample from what is very close to prior, and again we are not testing our code. We need to choose somewhere in the middle so that the PRT tests the higher order moments of the posterior.
 
 To tune the amount of data to generate we can plot the posterior vs the prior samples from the PRT as we can see in the figure below. Ideally there is a nice amount of variation around the line `y=x` as in the middle plot (for `N=10` data points). In the other two case the PRT will trivially recover prior samples and not test the software.
 
@@ -101,37 +101,6 @@ To tune the amount of data to generate we can plot the posterior vs the prior sa
 
 The proof of the PRT is as follows:
 
-\\(
-
-\begin{theorem}[Prior reproduction test]\label{theorem_PRT}
-Define parameter \(\theta \in \Theta\) and let \(X\) takes values in \(\mathcal{R}^N\). The prior reproduction test algorithm is defined as follows:
-
-\begin{enumerate}
-    \item Sample from the prior: \(\theta_0 \sim \pi_0\)
-    \item Sample data from the data model: \(X \sim f_{X|\theta}(\cdot | \theta_0)\)
-    \item Sample from the posterior \(\theta_p \sim f_{\theta|X}(\cdot | X)\)
-\end{enumerate}
-
-\(\theta_p\) is then distributed according to the prior: \(\theta_p \sim \pi_0\)
-\end{theorem}
-\begin{proof}
-Let \(Z(x):= \int_{\Theta} f_{X|\theta}(x|\theta) \pi_0(\theta)d\theta\)
-\begin{itemize}
-    \item \((\theta_0, X)\) has joint density \(f_{\theta_0, X}(\theta, x) = f_{X|\theta}(x|\theta)\pi_0(\theta)\)
-    \item \( (\theta_0, X, \theta_p) \) has joint density \(f_{\theta_0, X, \theta_p}(\theta_0, x, \theta_p) = f_{\theta|X}(\theta_p|x)f_{X|\theta}(x|\theta_0) \pi_0(\theta_0)\), with \(f_{\theta|X} = \frac{f_{X|\theta}(x|\theta)\pi_0(\theta)}{Z(x)}\)
-\end{itemize}
-
-We therefore have
-\begin{align}
-    f_{\theta_p}(\theta_p) & = \int_{\mathcal{R}^N}\int_{\Theta} f_{\theta_0, X, \theta_p}(\theta_0, x, \theta_p) d\theta_0 dx \\
-    &= \int_{\mathcal{R}^N}\int_{\Theta} f_{\theta|X}(\theta_p|x) f_{X|\theta}(x|\theta_0)\pi_0(\theta_0) d\theta_0 dx \\
-    &=  \int_{\mathcal{R}^N} \frac{f_{X|\theta}(x|\theta_p)\pi_0(\theta_p)}{Z(x)} \int_{\Theta} f_{X|\theta}(x|\theta_0)\pi_0(\theta_0)d\theta_0 \\
-    &= \pi_0(\theta_p)  \int_{\mathcal{R}^N} f_{X|\theta}(x|\theta_p)dx \\
-    &= \pi_0(\theta_p)
-\end{align}
-
-\end{proof}
-\\)
 
 
 ## Limitations
@@ -140,4 +109,3 @@ We therefore have
 - intuition. If generate more/less data
 - problem: expensive. Might need to hand tune the sample for each generated dataset
 - other limitation: if there's a mode that the sampler mises, the PRT might not detect this.
-
