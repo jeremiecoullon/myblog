@@ -63,13 +63,8 @@ In contrast, an example of a simple graph that I think works well is this [map o
 Other examples of very well designed graphs are the ones built by [concept.space](http://concept.space/), such as this [map of philosophy](http://map.philosophies.space/). It has a huge amount of information, but most of it is hidden if you are zoomed out. As you zoom into a specific area of philosophy you get more and more detail about that area of philosophy until you have individual papers. When you click on a paper you then get the abstract and a link to it.
 
 
-<!-- <figure style="text-align:center">
-  <iframe src="http://map.philosophies.space/" style="width:96%; margin-left:2%; height:400px;"></iframe>
-  <figcaption>Philosophies Space</figcaption>
-</figure> -->
-
 Notice also the minimap in the lower right hand corner that reminds you of where you currently are in the map. Finally, it seems that they have automated the process of adding and clustering the papers (from looking at the software [credited](http://philosophies.space/credits/) on their website). They seemed to have scraped [PhilPapers](https://philpapers.org/), used [Word2Vec](https://code.google.com/archive/p/word2vec/) to get word embeddings for each paper, [reduced the dimension](https://github.com/lmcinnes/umap) of the space, and finally [clustered](https://hdbscan.readthedocs.io/en/latest/) the result to find the location of each paper in the 2 dimensional map. As a result they could then use this workflow to create a similar map for [climate science](http://map.climate.space/) and [biomedicine](http://concept.space/projects/biomap/).
 
 In conclusion, the idea of a visual map showing the links between different things in a discipline (players in gypsy jazz, papers in philosophy, etc..) is a very appealing one. However, getting it right is surprisingly difficult; for me the best example is the map of philosophy described above.
 
-<i>Thanks for <a href="https://www.lukas.derungs.de/">Lukas DeRungs</a> for reading a draft of this post</i>
+_Thanks to <a href="https://www.lukas.derungs.de/">Lukas DeRungs</a> for reading a draft of this post_
