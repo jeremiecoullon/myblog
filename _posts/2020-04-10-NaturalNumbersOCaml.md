@@ -263,3 +263,6 @@ Let's try it out:
 We have built up natural numbers from first principles and now have a working calculator. However these operators start getting very slow for numbers of around 7 digits or more, so sticking with built-in integers sounds preferable..
 
 _All the code for this post is on [Github](https://github.com/jeremiecoullon/natural_numbers_post)_
+
+
+_Thanks to [James Jobanputra](https://www.linkedin.com/in/james-jobanputra-62582669) for useful feedback on this post_
