@@ -1,12 +1,12 @@
 ---
 layout: post
 title: "Implementing natural numbers in OCaml"
-date: 2021-04-06 08:00:00 +0000
+date: 2020-04-06 08:00:00 +0000
 categories: programming
 ---
 
 In this post we're going to implement natural numbers (positive integers) in [OCaml](https://ocaml.org/) to see how we can define numbers from first
-principle, namely without using OCaml's built in `Integer` type. We'll then write a simple UI so that we have a basic (but inefficient) calculator.
+principle, namely without using OCaml's built in `Integer` type. We'll then write a simple UI so that we have a basic (but inefficient) calculator. You can find all the code for this post on [Github](https://github.com/jeremiecoullon/natural_numbers_post).
 
 
 ## Definition
@@ -18,7 +18,9 @@ n \in \mathcal{N} \iff n = \begin{cases}0 \\ S(m) \hspace{5mm} \text{for }m \in 
 \end{cases}
 $$
 
-With $$S(m)$$ the [successor function](https://en.wikipedia.org/wiki/Successor_function), which is a function that simply returns the next natural number. This means that a natural number is either $$0$$ or the successor of another natural number. For example $$0$$ is a natural number (the first case in the definition), but $$1$$ is also a natural number, as it's the successor of $$0$$ (you would write $$1=S(0)$$). 2 can then be written as $$2 = S(S(0))$$ , and so on. By using recursion (the definition of a natural number includes another natural number) we can "bootstrap" building numbers without using many other definitions.
+We used the function $$S(m)$$ which is called the [successor function](https://en.wikipedia.org/wiki/Successor_function). This simply returns the next natural number (for example $$S(0)=1$$, and $$S(4)=5$$).
+
+This definition means that a natural number is either $$0$$ or the successor of another natural number. For example $$0$$ is a natural number (the first case in the definition), but $$1$$ is also a natural number, as it's the successor of $$0$$ (you would write $$1=S(0)$$). 2 can then be written as $$2 = S(S(0))$$ , and so on. By using recursion (the definition of a natural number includes another natural number) we can "bootstrap" building numbers without using many other definitions.
 
 
 We now write this definition as a type in OCaml, which looks a lot like the mathematical definition above:
@@ -95,7 +97,7 @@ let (+*) n m =
   aux n m Zero
 ```
 
-Here we use an auxiliary function which builds up the result in the accumulator `acc` by adding `n` to it `m` times. So applying this function to $$3$$ and $$2$$ gives: $$3*2 = 3*1 + 3 = 3*0 + 6 = 6$$. And in code this is:
+Here we use an auxiliary function (`aux`) which builds up the result in the accumulator `acc` by adding `n` to it `m` times. So applying this function to $$3$$ and $$2$$ gives: $$3*2 = 3*1 + 3 = 3*0 + 6 = 6$$. And in code this is:
 
 - `(Succ (Succ (Succ Zero))) +* (Succ (Succ Zero))`
 - Which returns `((Succ (Succ (Succ Zero))) +* (Succ Zero)) ++ (Succ (Succ (Succ Zero)))`
@@ -123,7 +125,9 @@ let (//) n m =
   aux n Zero
 ```
 
-Finally we can define the modulo operator. As we use previous definitions of division, multiplication, and subtraction, this definition is abstracted away from our implementation of natural numbers.
+Like in the case of multiplication, the division function defines an auxiliary function that builds up the result in the accumulator `acc`. This function checks whether the first argument `p` is less than `m`. If it isn't, then increment the accumulator by 1 and call `aux` again but with `p-m` as the first argument. Once `p` is less than `m` then return the accumulator. So this auxiliary function counts the number of times that `m` fits into `p`, which is exactly what integer division is. We run this function with `n` as first argument and with the accumulator as `Zero`.
+
+Finally we can define the modulo operator. As we use previous definitions of division, multiplication, and subtraction, this definition is abstracted away from our implementation of natural numbers. This function gives the remainder when dividing `n` by `m`.
 
 ```ocaml
 
@@ -257,3 +261,5 @@ Let's try it out:
 ## Conclusion
 
 We have built up natural numbers from first principles and now have a working calculator. However these operators start getting very slow for numbers of around 7 digits or more, so sticking with built-in integers sounds preferable..
+
+_All the code for this post is on [Github](https://github.com/jeremiecoullon/natural_numbers_post)_
