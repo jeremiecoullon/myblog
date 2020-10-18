@@ -25,4 +25,4 @@ Other projects:
 
 Research:
 - [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
-- [MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [preprint]](https://arxiv.org/abs/2001.02013) 
+- [MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [preprint]](https://arxiv.org/abs/2001.02013)
