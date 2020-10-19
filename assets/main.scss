@@ -29,11 +29,11 @@ table, h1, h2, h3, h4, h5, h6, p, blockquote, pre, ul, ol, dl, figure, .highligh
     margin-bottom: 50px
   }
 }
-@media(min-width:698px){
-  .about_bio {
-    margin-bottom: 100px
-  }
-}
+// @media(min-width:698px){
+//   .about_bio {
+//     margin-bottom: 100px
+//   }
+// }
 @media(max-width: 590px){
   .about_image{
     width: 120px;
