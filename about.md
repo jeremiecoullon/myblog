@@ -26,5 +26,6 @@ Other projects:
 - [The Art of Toastie](https://www.instagram.com/jeremie.coullon/)
 
 Research:
-- [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
+- [Ensemble sampler for infinite-dimensional inverse problems [preprint]](https://arxiv.org/abs/2010.15181)
 - [MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [preprint]](https://arxiv.org/abs/2001.02013)
+- [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
