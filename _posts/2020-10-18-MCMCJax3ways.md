@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "MCMC in JAX with benchmarks: 3 ways to write a sampler"
-date: 2020-10-30 08:00:00 +0000
+date: 2020-11-10 08:00:00 +0000
 categories: MCMC JAX statistics programming
 ---
 
