@@ -128,6 +128,8 @@ def ula_sampler_full_jax_jit(key, grad_log_post, num_samples, dt, x_0):
 
 Having the entire function written in JAX means that once the function is compiled it will usually be faster (see benchmarks below), and we can rerun it for different PRNG keys or different initial conditions to get different realisations of the chain. We can also run this function in `vmap` (mapping over the keys or inital conditions) to get several chains running in parallel. Check out this [blog post](https://rlouf.github.io/post/jax-random-walk-metropolis/) for a benchmark of a Metropolis sampler in parallel using JAX and Tensorflow.
 
+Note that another way to do this would have been to split the initial key once at the beginning (`keys = random.split(key, num_samples)`) and scan over (ie: loop over) all these keys: `lax.scan(ula_step, carry, keys)`. The `ula_step` and `ula_kernel` functions would then have to be modified slightly for this to work. This would simplify code even more as it means you don't need to split the key at each iteration anymore.
+
 The only thing left to do this the full JAX version is to print the progress of the chain, which is especially useful for long runs. This is not as straightforwards to do with jitted functions as with standard Python functions, but this [discussion on Github](https://github.com/google/jax/discussions/4763) goes over how to do this.
 
 The final thing to point out is this JAX code ports directly to GPU without any modifications, so it might be possible to get an additional speedup in the full JAX version compared to those discussed below.
@@ -293,4 +295,4 @@ The main conclusion we take from this is that in general writing more things in 
 _All the code for this post is on [Github](https://github.com/jeremiecoullon/jax_MCMC_blog_post)_
 
 
-_Thanks to [Jake VanderPlas](http://vanderplas.com/) for useful feedback on this post_
+_Thanks to [Jake VanderPlas](http://vanderplas.com/) and [Remi Louf](https://rlouf.github.io/) for useful feedback on this post_
