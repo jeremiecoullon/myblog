@@ -138,6 +138,8 @@ The final thing to point out is this JAX code ports directly to GPU without any 
 
 Now that we've gone over 3 ways to write an MCMC sampler we'll show some speed benchmarks for ULA along with two other algorithms. We use the logistic regression model presented above and run `20 000` samples throughout.
 
+These benchmarks ran on my laptop (standard macbook pro). You can find the benchmarks of the same samplers on a GPU in the appendix.
+
 
 ## Unadjusted Langevin algorithm
 
@@ -300,7 +302,7 @@ _Thanks to [Jake VanderPlas](http://vanderplas.com/) and [Remi Louf](https://rlo
 
 # Appendix: GPU benchmarks
 
-_edit: 9th December 2020_
+_edit: added this section on 9th December 2020_
 
 We show here the benchmarks on a single GPU compute node. Note that here the ranges of dataset sizes and dimensions are much larger as the timings essentially didn't vary for the ranges used in the previous benchmarks.
 
