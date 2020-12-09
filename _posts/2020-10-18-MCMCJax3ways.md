@@ -304,9 +304,10 @@ _Thanks to [Jake VanderPlas](http://vanderplas.com/) and [Remi Louf](https://rlo
 
 _edit: added this section on 9th December 2020_
 
-We show here the benchmarks on a single GPU compute node. Note that here the ranges of dataset sizes and dimensions are much larger as the timings essentially didn't vary for the ranges used in the previous benchmarks.
+We show here the benchmarks on a single GPU compute node. For the runs where the dataset size increases we run the samplers for `20 000` iterations for a 5 dimensional parameter. For the ones where we increase the dimension we generate 1000 data points and run `20 000` iterations.
 
-Also notice how for small dataset sizes and dimensions the samplers are faster on CPU. This is because the GPU has a fixed overhead cost. However as the datasets gets larger the GPU does much better.
+Note that here the ranges of dataset sizes and dimensions are much larger as the timings essentially didn't vary for the ranges used in the previous benchmarks. Also notice how for small dataset sizes and dimensions the samplers are faster on CPU. This is because the GPU has a fixed overhead cost. However as the datasets gets larger the GPU does much better.
+
 
 Timings are all in seconds.
 
