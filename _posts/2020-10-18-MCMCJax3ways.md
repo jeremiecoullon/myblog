@@ -9,7 +9,7 @@ categories: MCMC JAX statistics programming
 This post goes over 3 ways to write a sampler using JAX. I found that although there are a bunch of tutorials about learning the basics of JAX, it was not clear to me what was the best way to write a sampler in JAX. In particular, how much of the sampler should you write in JAX? Just the log-posterior (or the loss in the case of optimisation), or the entire loop? This blog post tries to answer this by going over 3 ways to write a sampler while focusing on the speed of each sampler.
 
 
-I'll assume that you already know some JAX, in particular the functions `grad`, `vmap`, and `jit`, along with the random number generator. If not, you can check out how to use these in this [blog post](https://colinraffel.com/blog/you-don-t-know-jax.html) or in the [JAX documentation](https://jax.readthedocs.io/en/latest/notebooks/quickstart.html)! I will rather focus on the different ways of using JAX for sampling (using the ULA sampler) and the speed performance of each implementation. I'll then redo these benchmarks for 2 other samplers (MALA and SLGD) You can find the code to reproduce all these examples on [Github](https://github.com/jeremiecoullon/jax_MCMC_blog_post).
+I'll assume that you already know some JAX, in particular the functions `grad`, `vmap`, and `jit`, along with the random number generator. If not, you can check out how to use these in this [blog post](https://colinraffel.com/blog/you-don-t-know-jax.html) or in the [JAX documentation](https://jax.readthedocs.io/en/latest/notebooks/quickstart.html)! I will rather focus on the different ways of using JAX for sampling (using the ULA sampler) and the speed performance of each implementation. I'll then redo these benchmarks for 2 other samplers (MALA and SLGD). The benchmarks are done on both CPU (in the post) and GPU (in the appendix) for comparison. You can find the code to reproduce all these examples on [Github](https://github.com/jeremiecoullon/jax_MCMC_blog_post).
 
 
 ## Sampler and model
@@ -128,13 +128,17 @@ def ula_sampler_full_jax_jit(key, grad_log_post, num_samples, dt, x_0):
 
 Having the entire function written in JAX means that once the function is compiled it will usually be faster (see benchmarks below), and we can rerun it for different PRNG keys or different initial conditions to get different realisations of the chain. We can also run this function in `vmap` (mapping over the keys or inital conditions) to get several chains running in parallel. Check out this [blog post](https://rlouf.github.io/post/jax-random-walk-metropolis/) for a benchmark of a Metropolis sampler in parallel using JAX and Tensorflow.
 
+Note that another way to do this would have been to split the initial key once at the beginning (`keys = random.split(key, num_samples)`) and scan over (ie: loop over) all these keys: `lax.scan(ula_step, carry, keys)`. The `ula_step` and `ula_kernel` functions would then have to be modified slightly for this to work. This would simplify code even more as it means you don't need to split the key at each iteration anymore.
+
 The only thing left to do this the full JAX version is to print the progress of the chain, which is especially useful for long runs. This is not as straightforwards to do with jitted functions as with standard Python functions, but this [discussion on Github](https://github.com/google/jax/discussions/4763) goes over how to do this.
 
-The final thing to point out is this JAX code ports directly to GPU without any modifications, so it might be possible to get an additional speedup in the full JAX version compared to those discussed below.
+The final thing to point out is this JAX code ports directly to GPU without any modifications. See the appendix for benchmarks on a GPU.
 
 # Benchmarks
 
 Now that we've gone over 3 ways to write an MCMC sampler we'll show some speed benchmarks for ULA along with two other algorithms. We use the logistic regression model presented above and run `20 000` samples throughout.
+
+These benchmarks ran on my laptop (standard macbook pro). You can find the benchmarks of the same samplers on a GPU in the appendix.
 
 
 ## Unadjusted Langevin algorithm
@@ -193,7 +197,7 @@ def sgld_kernel(key, param, grad_log_post, dt, X, y_data, minibatch_size):
 
 ### Increase amount of data:
 
-We run the same experiment as before: `20 000` samples for a 5 dimensional parameter. with increasing the amount of data. As before the timings are in seconds. As minibatch size we use 10% of the dataset for first two datasets, and 1% of the datasets for the last two.
+We run the same experiment as before: `20 000` samples for a 5 dimensional parameter. with increasing the amount of data. As before the timings are in seconds. The minibatch sizes we use are $$10\%$$, $$10\%$$, $$1\%$$, and $$0.1\%$$ respectively.
 
 dataset size | python | JAX kernel | full JAX (1st run) | full JAX (1nd run)
 --- | --- | --- | --- | ---
@@ -293,4 +297,68 @@ The main conclusion we take from this is that in general writing more things in 
 _All the code for this post is on [Github](https://github.com/jeremiecoullon/jax_MCMC_blog_post)_
 
 
-_Thanks to [Jake VanderPlas](http://vanderplas.com/) for useful feedback on this post_
+_Thanks to [Jake VanderPlas](http://vanderplas.com/) and [Remi Louf](https://rlouf.github.io/) for useful feedback on this post as well as the  High  End  Computing  facility  at  Lancaster University for the GPU cluster (results in the appendix below)_
+
+
+# Appendix: GPU benchmarks
+
+_edit: added this section on 9th December 2020_
+
+We show here the benchmarks on a single GPU compute node. For the runs where the dataset size increases we run the samplers for `20 000` iterations for a 5 dimensional parameter. For the ones where we increase the dimension we generate 1000 data points and run `20 000` iterations.
+
+Note that here the ranges of dataset sizes and dimensions are much larger as the timings essentially didn't vary for the ranges used in the previous benchmarks. Also notice how for small dataset sizes and dimensions the samplers are faster on CPU. This is because the GPU has a fixed overhead cost. However as the datasets gets larger the GPU does much better.
+
+
+Timings are all in seconds.
+
+## ULA
+
+dataset size | python | JAX kernel | full JAX (1st run) | full JAX (2nd run)
+--- | --- | --- | --- | ---
+$$10^3$$ | 18 | 8.4 | 2.2  | 1.5
+$$10^6$$ | 18  | 12  | 5.8 | 5.2
+$$10^7$$ |  49 | 50 | 43 | 42
+$$2*10^7$$ | 90  | 92 | 84  | 82
+
+dimension | python | JAX kernel | full JAX (1st run) | full JAX (1nd run)
+--- | --- | --- | --- | ---
+$$100$$ |  18  | 8.2 | 2.2  |1.5
+$$10^4$$ | 33  |10  |4.0 | 3.0
+$$2*10^4$$ | 47 | 14 | 6.5 | 5.0
+$$3*10^4$$ | 61  | 18 | 9.1  | 7.1
+
+
+
+## SGLD
+
+The minibatch sizes for the increasing dataset sizes are $$10\%$$, $$10\%$$, $$1\%$$, and $$0.1\%$$ respectively.
+
+dataset size | python | JAX kernel | full JAX (1st run) | full JAX (2nd run)
+--- | --- | --- | --- | ---
+$$10^3$$ | 80 | 11 | 3.6  | 2.8
+$$10^6$$ |  95 | 10 | 3.3  | 2.9
+$$10^7$$ |  120 | 10  |  3.4 | 3.0
+$$2*10^7$$ | 90  | 10 |  3.3 | 2.9
+
+dimension | python | JAX kernel | full JAX (1st run) | full JAX (1nd run)
+--- | --- | --- | --- | ---
+$$100$$ | 80 |  11 | 3.8  | 2.9
+$$10^4$$ | 96 | 12 | 3.6 | 3.0
+$$2*10^4$$ | 109 | 13 | 3.6 | 2.9
+$$3*10^4$$ | 122 | 14 | 3.6 | 3.0
+
+## MALA
+
+dataset size | python | JAX kernel | full JAX (1st run) | full JAX (2nd run)
+--- | --- | --- | --- | ---
+$$10^3$$ | 57 | 14 | 3.2  | 2.4
+$$10^6$$ | 56 | 14  | 6.9 | 5.8
+$$10^7$$ | 83 | 54 | 46 | 44
+$$2*10^7$$ | 126 | 98 | 89 | 86
+
+dimension | python | JAX kernel | full JAX (1st run) | full JAX (1nd run)
+--- | --- | --- | --- | ---
+$$100$$ | 57 | 14 | 3.6 | 2.7
+$$10^4$$ | 72 | 16 |  5.4 | 3.6
+$$2*10^4$$ | 88 | 17 | 9.4 | 5.7
+$$3*10^4$$ | 101 | 19 | 12 | 7.8
