@@ -16,7 +16,7 @@ I play gypsy jazz, write code, and like computational stats & machine learning.<
 Tech stack I tend to use:
 
 - *Science:* Python/Numpy, JAX, Julia, S3, EC2
-- *Web development:* Django, React, Heroku, S3, EC2
+- *Web development:* Django, React, Heroku, S3, Netlify, EC2
 
 
 
