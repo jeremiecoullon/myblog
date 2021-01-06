@@ -13,9 +13,14 @@ comments: false
 I play gypsy jazz, write code, and like computational stats & machine learning.</p>
 </div>
 
+Tech stack I tend to use:
+
+- *Science:* Python/Numpy, JAX, Julia, S3, EC2
+- *Web development:* Django, React, Heroku, S3, Netlify, EC2
 
 
-Music related stuff:
+
+Music related projects:
 - [Latchepen](https://www.latchepen.com/): Gypsy jazz quartet
 - [London Django Collective](https://londondjangocollective.com): Collective of a few gypsy jazz players in London
 - [The DjangoVerse](https://www.londondjangocollective.com/djangoverse/): interactive data visualisation of Gypsy Jazz musicians around the world
