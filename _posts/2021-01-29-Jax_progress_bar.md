@@ -58,8 +58,8 @@ As a workaround, the JAX team has added the [`host_callback`](https://jax.readth
 from jax.experimental import host_callback
 
 def _print_consumer(arg, transrorm):
-    i, n_iter = arg
-    print(f"Iteration {i}/{n_iter}")
+    iter_num, n_iter = arg
+    print(f"Iteration {iter_num}/{n_iter}")
 
 @jit
 def progress_bar(arg, result):
@@ -81,8 +81,9 @@ The `id_tap` function behaves like the identity function, so calling `host_callb
 
 You need to pass an argument in this way because you need to include a data dependency to make sure that the print function gets called at the correct time. This is linked to the fact that computations in JAX are run [only when needed](https://jax.readthedocs.io/en/latest/async_dispatch.html). So you need to pass in a variable that changes throughout the algorithm such as the PRNG key at that iteration.
 
+Also note also that the `_print_consumer` function takes in `arg` (which holds the current iteration number as well as the total number of iterations) and `transform`. This `transform` argument isn't used here, but apparently should be included in the consumer for id_tap (namely: the Python function that gets called).
 
-Here's how you would use it in the ULA sampler:
+Here's how you would use the progress bar in the ULA sampler:
 
 ```python  
 @partial(jit, static_argnums=(1,2,3))
