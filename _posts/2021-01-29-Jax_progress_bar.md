@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Adding a progress bar to JAX loops and scans"
+title: "How to add a progress bar to JAX loops and scans"
 date: 2021-01-29 08:00:00 +0000
 categories: JAX programming MCMC statistics
 ---
