@@ -57,7 +57,7 @@ As a workaround, the JAX team has added the [`host_callback`](https://jax.readth
 ```python
 from jax.experimental import host_callback
 
-def _print_consumer(arg, transrorm):
+def _print_consumer(arg, transform):
     iter_num, n_iter = arg
     print(f"Iteration {iter_num}/{n_iter}")
 
@@ -86,13 +86,43 @@ Also note also that the `_print_consumer` function takes in `arg` (which holds t
 Here's how you would use the progress bar in the ULA sampler:
 
 ```python  
+  def ula_step(carry, iter_num):
+      key, param = carry
+      key = progress_bar((iter_num, num_samples, print_rate), key)
+      key, param = ula_kernel(key, param, grad_log_post, dt)
+      return (key, param), param
+```
+
+We passed the `key` into the progress bar which comes out unchanged. We also set the print rate to be 10% of the number of samples.
+
+
+### Put it in a decorator
+
+We can make this even easier to use by putting the progress bar in a decorator. Note that the decorator takes in `num_samples` as an argument.
+
+```python
+def progress_bar_scan(num_samples):
+    def _progress_bar_scan(func):
+        print_rate = int(num_samples/10)
+        def wrapper_progress_bar(carry, iter_num):
+            iter_num = progress_bar((iter_num, num_samples, print_rate), iter_num)
+            return func(carry, iter_num)
+        return wrapper_progress_bar
+    return _progress_bar_scan
+```
+
+Remember that writing a decorator with arguments means writing a function that returns a decorator (which itself is a function that returns a modified version of the main function you care about). See this [StackOverflow question](https://stackoverflow.com/questions/5929107/decorators-with-parameters) about this.
+
+Putting it all together, the result is very easy to use:
+
+```python
 @partial(jit, static_argnums=(1,2,3))
 def ula_sampler_pbar(key, grad_log_post, num_samples, dt, x_0):
-    print_rate = int(num_samples/10)
+    "ULA sampler with progress bar"
 
+    @progress_bar_scan(num_samples)
     def ula_step(carry, iter_num):
         key, param = carry
-        key = progress_bar((iter_num, num_samples, print_rate), key)
         key, param = ula_kernel(key, param, grad_log_post, dt)
         return (key, param), param
 
@@ -101,11 +131,10 @@ def ula_sampler_pbar(key, grad_log_post, num_samples, dt, x_0):
     return samples
 ```
 
-We passed the `key` into the progress bar which comes out unchanged. We also set the print rate to be 10% of the number of samples.
 
-### Using `print` to see when the function is compiling
+### A final touch: use `print` to see when the function is compiling
 
-Now that we have a progress bar, we might also want to know when the function is compiling (which is especially useful when it takes a while to compile). Here we can use the fact that the `print` function only gets called during compilation. We can add `print("Compiling..")` at the beginning of `ula_sampler_pbar` and add `print("Running:")` at the end, which will display when the function is first run.
+Now that we have a progress bar, we might also want to know when the function is compiling (which is especially useful when it takes a while to compile). Here we can use the fact that the `print` function only gets called during compilation. We can add `print("Compiling..")` at the beginning of `ula_sampler_pbar` and add `print("Running:")` at the end. Both of these will then only display when the function is first run.
 
 ### Conclusion
 
