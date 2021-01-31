@@ -58,26 +58,28 @@ As a workaround, the JAX team has added the [`host_callback`](https://jax.readth
 from jax.experimental import host_callback
 
 def _print_consumer(arg, transform):
-    iter_num, n_iter = arg
-    print(f"Iteration {iter_num}/{n_iter}")
+    iter_num, num_samples = arg
+    print(f"Iteration {iter_num:,} / {num_samples:,}")
 
 @jit
 def progress_bar(arg, result):
     """
     Print progress of a scan/loop only if the iteration number is a multiple of the print_rate
 
-    Usage: carry = progress_bar((iter_num, n_iter, print_rate), carry)
+    Usage: `carry = progress_bar((iter_num + 1, num_samples, print_rate), carry)`
+    Pass in `iter_num + 1` so that counting starts at 1 and ends at `num_samples`
+
     """
-    iter_num, n_iter, print_rate = arg
+    iter_num, num_samples, print_rate = arg
     result = lax.cond(
-        i%print_rate==0,
-        lambda _: host_callback.id_tap(_print_consumer, (iter_num, n_iter), result=result),
+        iter_num % print_rate==0,
+        lambda _: host_callback.id_tap(_print_consumer, (iter_num, num_samples), result=result),
         lambda _: result,
         operand=None)
     return result
 ```
 
-The `id_tap` function behaves like the identity function, so calling `host_callback.id_tap(_print_consumer, (iter_num, n_iter), result=result)` will simply return `result`. However while doing this, it will also call the function `_print_consumer((iter_num, n_iter))` which we've defined to print the iteration number.
+The `id_tap` function behaves like the identity function, so calling `host_callback.id_tap(_print_consumer, (iter_num, num_samples), result=result)` will simply return `result`. However while doing this, it will also call the function `_print_consumer((iter_num, num_samples))` which we've defined to print the iteration number.
 
 You need to pass an argument in this way because you need to include a data dependency to make sure that the print function gets called at the correct time. This is linked to the fact that computations in JAX are run [only when needed](https://jax.readthedocs.io/en/latest/async_dispatch.html). So you need to pass in a variable that changes throughout the algorithm such as the PRNG key at that iteration.
 
@@ -86,11 +88,11 @@ Also note also that the `_print_consumer` function takes in `arg` (which holds t
 Here's how you would use the progress bar in the ULA sampler:
 
 ```python  
-  def ula_step(carry, iter_num):
-      key, param = carry
-      key = progress_bar((iter_num, num_samples, print_rate), key)
-      key, param = ula_kernel(key, param, grad_log_post, dt)
-      return (key, param), param
+def ula_step(carry, iter_num):
+    key, param = carry
+    key = progress_bar((iter_num + 1, num_samples, print_rate), key)
+    key, param = ula_kernel(key, param, grad_log_post, dt)
+    return (key, param), param
 ```
 
 We passed the `key` into the progress bar which comes out unchanged. We also set the print rate to be 10% of the number of samples.
@@ -105,7 +107,7 @@ def progress_bar_scan(num_samples):
     def _progress_bar_scan(func):
         print_rate = int(num_samples/10)
         def wrapper_progress_bar(carry, iter_num):
-            iter_num = progress_bar((iter_num, num_samples, print_rate), iter_num)
+            iter_num = progress_bar((iter_num + 1, num_samples, print_rate), iter_num)
             return func(carry, iter_num)
         return wrapper_progress_bar
     return _progress_bar_scan
