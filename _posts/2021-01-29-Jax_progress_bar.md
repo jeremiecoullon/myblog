@@ -6,10 +6,10 @@ categories: JAX programming MCMC statistics
 ---
 
 
-JAX allows you to write optimisers and samplers which are especially fast if you use the [`scan`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.scan.html) or [`fori_loop`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.fori_loop.html) functions. However if you write them in this way it's not obvious how to add progress bar for your algorithm (using [tqdm](https://pypi.org/project/tqdm/) or simply the `print` function for example). This post explains how to do it. You can find all the code in this [Github gist](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef).
+JAX allows you to write optimisers and samplers which are especially fast if you use the [`scan`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.scan.html) or [`fori_loop`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.fori_loop.html) functions. However if you write them in this way it's not obvious how to add progress bar for your algorithm (using [tqdm](https://pypi.org/project/tqdm/) or simply the `print` function for example). This post explains how to do do both. After briefly setting up the sampler, we first go over how to create a basic version using Python's `print` function, and then show how to create a nicer version using tqdm. You can find the code for the basic version [here](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef) and the code for the tqdm version [here](https://gist.github.com/jeremiecoullon/f6a658be4c98f8a7fd1710418cca0856)
 
 
-### Setup: sampling a Gaussian
+# Setup: sampling a Gaussian
 
 We'll use an [Unadjusted Langevin Algorithm](https://en.wikipedia.org/wiki/Langevin_dynamics) (ULA) to sample from a Gaussian to illustrate how to write the progress bar. Let's start by defining the log-posterior of a d-dimensional Gaussian and we'll use JAX to get it's gradient:
 
@@ -50,7 +50,8 @@ def ula_sampler(key, grad_log_post, num_samples, dt, x_0):
 
 If we add a `print` function in `ula_step` above, it will only be called the first time it is called, which is when `ula_sampler` is compiled. This is because printing is a side effect, and [compiled JAX functions are pure](https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#%F0%9F%94%AA-Pure-functions).
 
-### Build a progress bar using `host_callback.id_tap`
+# Basic progress bar
+
 
 As a workaround, the JAX team has added the [`host_callback`](https://jax.readthedocs.io/en/latest/jax.experimental.host_callback.html) module (which is still experimental, so things may change). This module defines functions that allow you to call Python functions from within a JAX function. Here's how you would use the [`id_tap`](https://jax.readthedocs.io/en/latest/jax.experimental.host_callback.html#using-id-tap-to-call-a-jax-function-on-another-device-with-no-returned-values-but-full-jax-transformation-support) function to create a progress bar (from this [discussion](https://github.com/google/jax/discussions/4763#discussioncomment-121452)):
 
@@ -133,11 +134,91 @@ def ula_sampler_pbar(key, grad_log_post, num_samples, dt, x_0):
     return samples
 ```
 
+Now that we have a progress bar, we might also want to know when the function is compiling (which is especially useful when it takes a while to compile). Here we can use the fact that the `print` function only gets called during compilation. We can add `print("Compiling..")` at the beginning of `ula_sampler_pbar` and add `print("Running:")` at the end. Both of these will then only display when the function is first run. You can find the code for this sampler [here](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef).
 
-### A final touch: use `print` to see when the function is compiling
 
-Now that we have a progress bar, we might also want to know when the function is compiling (which is especially useful when it takes a while to compile). Here we can use the fact that the `print` function only gets called during compilation. We can add `print("Compiling..")` at the beginning of `ula_sampler_pbar` and add `print("Running:")` at the end. Both of these will then only display when the function is first run.
+# tqdm progress bar
+
+We'll now use the same ideas to build a fancier progress bar: namely one that uses [tqdm](https://pypi.org/project/tqdm/). We'll need to define a `tqdm` progress bar and have `host_callback.id_tap` call `tqdm.update` regularly to update it. We'll also need to close the progress bar once we're finished or else `tqdm` will act weirdly. To allow these function to have access to the progress bar -- and to avoid global variables -- we'll use closures.
+
+The following factory builds the progress bar decorator along with a function to set its description and one to close it.
+
+```python
+def progress_bar_factory(num_samples):
+    """Factory that builds a progress bar decorator along
+    with the `set_tqdm_description` and `close_tqdm` functions
+    """
+
+    tqdm_pbar = tqdm(range(num_samples))
+
+    def set_tqdm_description(message):
+        tqdm_pbar.set_description(
+            message,
+            refresh=False,
+        )
+
+    def close_tqdm():
+        tqdm_pbar.close()
+
+    def _update_tqdm(arg, transform):
+        tqdm_pbar.update(arg)
+
+    @jit
+    def _progress_bar(arg, result):
+        """Updates tqdm progress bar of a scan/loop only if the iteration number is a multiple of the print_rate
+        Usage: carry = progress_bar((iter_num, print_rate), carry)
+        """
+        iter_num, print_rate = arg
+
+        result = lax.cond(
+            iter_num % print_rate == 0,
+            lambda _: host_callback.id_tap(_update_tqdm, print_rate, result=result),
+            lambda _: result,
+            operand=None,
+        )
+        return result
+
+    def progress_bar_scan(func):
+        """Decorator that adds a progress bar to `body_fun` used in `lax.scan`.
+        Note that `body_fun` must be looping over a tuple who's first element is `np.arange(num_samples)`.
+        This means that `iter_num` is the current iteration number
+        """
+        print_rate = int(num_samples / 10)
+
+        def wrapper_progress_bar(carry, iter_num):
+            iter_num = _progress_bar((iter_num, print_rate), iter_num)
+            return func(carry, iter_num)
+
+        return wrapper_progress_bar
+
+    return progress_bar_scan, set_tqdm_description, close_tqdm
+
+```
+
+To use it you simply call `progress_bar_factory` to define the 3 functions and use them in the sampler.
+
+Note that we include `samples[0][0].block_until_ready()` at the end of the function. This is so that the sampler is run before we close the progress bar. Unfortunately this means that now we can't compile or batch the entire sampler anymore. But it's still really fast and now includes a really nice tqdm progress bar.
+
+```python
+def ula_sampler_pbar(key, grad_log_post, num_samples, dt, x_0):
+    "ULA sampler with progress bar"
+    progress_bar_scan, set_tqdm_description, close_tqdm = progress_bar_factory(num_samples)
+    set_tqdm_description(f"Running ULA for {num_samples:,} iteration")
+
+    @progress_bar_scan
+    def ula_step(carry, iter_num):
+        key, param = carry
+        key, param = ula_kernel(key, param, grad_log_post, dt)
+        return (key, param), param
+
+    carry = (key, jnp.zeros(100))
+    _, samples = lax.scan(ula_step, carry, jnp.arange(num_samples))
+    samples[0][0].block_until_ready()
+    close_tqdm()
+    return samples
+
+```
 
 ### Conclusion
 
-That's it! You can try out this code in this [Github gist](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef).
+So we've built two progress bars: a basic version and a nicer version that uses tqdm. The code for are on these two gists: [here](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef) and [here](https://gist.github.com/jeremiecoullon/f6a658be4c98f8a7fd1710418cca0856).
