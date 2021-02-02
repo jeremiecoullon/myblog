@@ -1,12 +1,12 @@
 ---
 layout: post
-title: "How to add a progress bar to JAX loops and scans"
+title: "How to add a progress bar to JAX scans and loops"
 date: 2021-01-29 08:00:00 +0000
 categories: JAX programming MCMC statistics
 ---
 
 
-JAX allows you to write optimisers and samplers which are especially fast if you use the [`scan`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.scan.html) or [`fori_loop`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.fori_loop.html) functions. However if you write them in this way it's not obvious how to add progress bar for your algorithm (using [tqdm](https://pypi.org/project/tqdm/) or simply the `print` function for example). This post explains how to do do both. After briefly setting up the sampler, we first go over how to create a basic version using Python's `print` function, and then show how to create a nicer version using tqdm. You can find the code for the basic version [here](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef) and the code for the tqdm version [here](https://gist.github.com/jeremiecoullon/f6a658be4c98f8a7fd1710418cca0856)
+JAX allows you to write optimisers and samplers which are really fast if you use the [`scan`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.scan.html) or [`fori_loop`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.fori_loop.html) functions. However if you write them in this way it's not obvious how to add progress bar for your algorithm. This post explains how to make a progress bar using Python's `print` function as well as using [tqdm](https://pypi.org/project/tqdm/). After briefly setting up the sampler, we first go over how to create a basic version using Python's `print` function, and then show how to create a nicer version using tqdm. You can find the code for the basic version [here](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef) and the code for the tqdm version [here](https://gist.github.com/jeremiecoullon/f6a658be4c98f8a7fd1710418cca0856).
 
 
 # Setup: sampling a Gaussian
@@ -96,7 +96,7 @@ def ula_step(carry, iter_num):
     return (key, param), param
 ```
 
-We passed the `key` into the progress bar which comes out unchanged. We also set the print rate to be 10% of the number of samples.
+We passed the `key` into the progress bar which comes out unchanged. We also set the print rate to be 10% of the number of samples. Note that this would also work for [`lax.fori_loop`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.fori_loop.html) except that the first argument of `ula_step` would be the current iteration number.
 
 
 ### Put it in a decorator
@@ -197,7 +197,7 @@ def progress_bar_factory(num_samples):
 
 To use it you simply call `progress_bar_factory` to define the 3 functions and use them in the sampler.
 
-Note that we include `samples[0][0].block_until_ready()` at the end of the function. This is so that the sampler is run before we close the progress bar. Unfortunately this means that now we can't compile or batch the entire sampler anymore. But it's still really fast and now includes a really nice tqdm progress bar.
+Note that we include `samples[0][0].block_until_ready()` at the end of the function. This is so that the sampler is run before we close the progress bar. Unfortunately this means that now we can't compile or batch the entire sampler anymore, but it's still really fast as almost all the speedup comes from using `lax.scan`. And now the sampler includes a really nice tqdm progress bar.
 
 ```python
 def ula_sampler_pbar(key, grad_log_post, num_samples, dt, x_0):
@@ -221,4 +221,4 @@ def ula_sampler_pbar(key, grad_log_post, num_samples, dt, x_0):
 
 ### Conclusion
 
-So we've built two progress bars: a basic version and a nicer version that uses tqdm. The code for are on these two gists: [here](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef) and [here](https://gist.github.com/jeremiecoullon/f6a658be4c98f8a7fd1710418cca0856).
+So we've built two progress bars: a basic version and a nicer version that uses tqdm. The code for these are on these two gists: [here](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef) and [here](https://gist.github.com/jeremiecoullon/f6a658be4c98f8a7fd1710418cca0856).
