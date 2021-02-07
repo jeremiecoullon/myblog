@@ -26,7 +26,7 @@ We now define ULA using the `scan` function (see [this post]({% post_url 2020-10
 
 
 ```python
-@partial(jit, static_argnums=(2,3))
+@partial(jit, static_argnums=(2,))
 def ula_kernel(key, param, grad_log_post, dt):
     key, subkey = random.split(key)
     paramGrad = grad_log_post(param)
@@ -35,7 +35,7 @@ def ula_kernel(key, param, grad_log_post, dt):
     return key, param
 
 
-@partial(jit, static_argnums=(1,2,3))
+@partial(jit, static_argnums=(1,2,))
 def ula_sampler(key, grad_log_post, num_samples, dt, x_0):
 
     def ula_step(carry, iter_num):
@@ -139,82 +139,82 @@ Now that we have a progress bar, we might also want to know when the function is
 
 # tqdm progress bar
 
-We'll now use the same ideas to build a fancier progress bar: namely one that uses [tqdm](https://pypi.org/project/tqdm/). We'll need to define a `tqdm` progress bar and have `host_callback.id_tap` call `tqdm.update` regularly to update it. We'll also need to close the progress bar once we're finished or else `tqdm` will act weirdly. To allow these function to have access to the progress bar -- and to avoid global variables -- we'll use closures.
+We'll now use the same ideas to build a fancier progress bar: namely one that uses [tqdm](https://pypi.org/project/tqdm/). We'll need to use `host_callback.id_tap` to define a `tqdm` progress bar and then call `tqdm.update` regularly to update it. We'll also need to close the progress bar once we're finished or else `tqdm` will act weirdly. To do with we'll define a decorator that takes in arguments just like we did in the case of the simple progress bar.
 
-The following factory builds the progress bar decorator along with a function to set its description and one to close it.
+This decorator defines the tqdm progress bar at the first iteration, updates it every `print_rate` number of iterations, and finally closes it at the end. You can optionally pass in a message to add at the beginning of the progress bar.
 
 ```python
-def progress_bar_factory(num_samples):
-    """Factory that builds a progress bar decorator along
-    with the `set_tqdm_description` and `close_tqdm` functions
-    """
+def progress_bar_scan(num_samples, message=None):
+    "Progress bar for a JAX scan"
+    if message is None:
+            message = f"Running for {num_samples:,} iterations"
+    tqdm_bars = {}
 
-    tqdm_pbar = tqdm(range(num_samples))
-
-    def set_tqdm_description(message):
-        tqdm_pbar.set_description(
-            message,
-            refresh=False,
-        )
-
-    def close_tqdm():
-        tqdm_pbar.close()
+    def _define_tqdm(arg, transform):
+        tqdm_bars[0] = tqdm(range(num_samples))
+        tqdm_bars[0].set_description(message, refresh=False)
 
     def _update_tqdm(arg, transform):
-        tqdm_pbar.update(arg)
+        tqdm_bars[0].update(arg)
 
-    @jit
-    def _progress_bar(arg, result):
-        """Updates tqdm progress bar of a scan/loop only if the iteration number is a multiple of the print_rate
-        Usage: carry = progress_bar((iter_num, print_rate), carry)
-        """
-        iter_num, print_rate = arg
+    def _close_tqdm(arg, transform):
+        tqdm_bars[0].close()
 
-        result = lax.cond(
-            iter_num % print_rate == 0,
-            lambda _: host_callback.id_tap(_update_tqdm, print_rate, result=result),
-            lambda _: result,
+    def _update_progress_bar(iter_num, print_rate):
+        "Updates tqdm progress bar of a JAX scan or loop"
+        _ = lax.cond(
+            iter_num == 0,
+            lambda _: host_callback.id_tap(_define_tqdm, print_rate, result=iter_num),
+            lambda _: iter_num,
             operand=None,
         )
-        return result
 
-    def progress_bar_scan(func):
+        _ = lax.cond(
+            iter_num % print_rate == 0,
+            lambda _: host_callback.id_tap(_update_tqdm, print_rate, result=iter_num),
+            lambda _: iter_num,
+            operand=None,
+        )
+
+        _ = lax.cond(
+            iter_num == num_samples-1,
+            lambda _: host_callback.id_tap(_close_tqdm, print_rate, result=iter_num),
+            lambda _: iter_num,
+            operand=None,
+        )
+
+    def _progress_bar_scan(func):
         """Decorator that adds a progress bar to `body_fun` used in `lax.scan`.
-        Note that `body_fun` must be looping over a tuple who's first element is `np.arange(num_samples)`.
+        Note that `body_fun` must be looping over `np.arange(num_samples)`.
         This means that `iter_num` is the current iteration number
         """
-        print_rate = int(num_samples / 10)
+        print_rate = int(num_samples / 20)
 
         def wrapper_progress_bar(carry, iter_num):
-            iter_num = _progress_bar((iter_num, print_rate), iter_num)
+            _update_progress_bar(iter_num, print_rate)
             return func(carry, iter_num)
 
         return wrapper_progress_bar
 
-    return progress_bar_scan, set_tqdm_description, close_tqdm
+    return _progress_bar_scan
 
 ```
 
-To use it you simply call `progress_bar_factory` to define the 3 functions and use them in the sampler.
-
-Note that we include `samples[0][0].block_until_ready()` at the end of the function. This is so that the sampler is run before we close the progress bar. Unfortunately this means that now we can't compile or batch the entire sampler anymore, but it's still really fast as almost all the speedup comes from using `lax.scan`. And now the sampler includes a really nice tqdm progress bar.
+To use it you simply add the decorator to the step function used in `lax.scan` with the number of samples as argument (and optionally the messsage to print at the beginning of the progress bar). Notice that the usage is exactly the same as for the basic progress bar described previously.
 
 ```python
+@partial(jit, static_argnums=(1,2))
 def ula_sampler_pbar(key, grad_log_post, num_samples, dt, x_0):
     "ULA sampler with progress bar"
-    progress_bar_scan, set_tqdm_description, close_tqdm = progress_bar_factory(num_samples)
-    set_tqdm_description(f"Running ULA for {num_samples:,} iteration")
 
-    @progress_bar_scan
+    @progress_bar_scan(num_samples)
     def ula_step(carry, iter_num):
         key, param = carry
         key, param = ula_kernel(key, param, grad_log_post, dt)
         return (key, param), param
 
-    carry = (key, jnp.zeros(100))
+    carry = (key, x_0)
     _, samples = lax.scan(ula_step, carry, jnp.arange(num_samples))
-    samples[0][0].block_until_ready()
-    close_tqdm()
     return samples
 
 ```
