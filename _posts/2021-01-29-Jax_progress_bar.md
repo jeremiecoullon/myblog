@@ -143,12 +143,20 @@ We'll now use the same ideas to build a fancier progress bar: namely one that us
 
 This decorator defines the tqdm progress bar at the first iteration, updates it every `print_rate` number of iterations, and finally closes it at the end. You can optionally pass in a message to add at the beginning of the progress bar.
 
+There are details to make sure the progress bar acts correctly in corner cases, such as if `num_samples` is less than 20, or if it's not a multiple of 20. Note also that tqdm is closed at the last iteration only _after_ the parameter update is done.
+
 ```python
 def progress_bar_scan(num_samples, message=None):
     "Progress bar for a JAX scan"
     if message is None:
             message = f"Running for {num_samples:,} iterations"
     tqdm_bars = {}
+
+    if num_samples > 20:
+        print_rate = int(num_samples / 20)
+    else:
+        print_rate = 1 # if you run the sampler for less than 20 iterations
+    remainder = num_samples % print_rate
 
     def _define_tqdm(arg, transform):
         tqdm_bars[0] = tqdm(range(num_samples))
@@ -157,42 +165,58 @@ def progress_bar_scan(num_samples, message=None):
     def _update_tqdm(arg, transform):
         tqdm_bars[0].update(arg)
 
-    def _close_tqdm(arg, transform):
-        tqdm_bars[0].close()
-
-    def _update_progress_bar(iter_num, print_rate):
+    def _update_progress_bar(iter_num):
         "Updates tqdm progress bar of a JAX scan or loop"
         _ = lax.cond(
             iter_num == 0,
-            lambda _: host_callback.id_tap(_define_tqdm, print_rate, result=iter_num),
+            lambda _: host_callback.id_tap(_define_tqdm, None, result=iter_num),
             lambda _: iter_num,
             operand=None,
         )
 
         _ = lax.cond(
-            iter_num % print_rate == 0,
+            # update tqdm every multiple of `print_rate` except at the end
+            (iter_num % print_rate == 0) & (iter_num != num_samples-remainder),
             lambda _: host_callback.id_tap(_update_tqdm, print_rate, result=iter_num),
             lambda _: iter_num,
             operand=None,
         )
 
         _ = lax.cond(
-            iter_num == num_samples-1,
-            lambda _: host_callback.id_tap(_close_tqdm, print_rate, result=iter_num),
+            # update tqdm by `remainder`
+            iter_num == num_samples-remainder,
+            lambda _: host_callback.id_tap(_update_tqdm, remainder, result=iter_num),
             lambda _: iter_num,
             operand=None,
         )
 
+    def _close_tqdm(arg, transform):
+        tqdm_bars[0].close()
+
+    def close_tqdm(result, iter_num):
+        return lax.cond(
+            iter_num == num_samples-1,
+            lambda _: host_callback.id_tap(_close_tqdm, None, result=result),
+            lambda _: result,
+            operand=None,
+        )
+
+
     def _progress_bar_scan(func):
         """Decorator that adds a progress bar to `body_fun` used in `lax.scan`.
-        Note that `body_fun` must be looping over `np.arange(num_samples)`.
+        Note that `body_fun` must either be looping over `np.arange(num_samples)`,
+        or be looping over a tuple who's first element is `np.arange(num_samples)`
         This means that `iter_num` is the current iteration number
         """
-        print_rate = int(num_samples / 20)
 
-        def wrapper_progress_bar(carry, iter_num):
-            _update_progress_bar(iter_num, print_rate)
-            return func(carry, iter_num)
+        def wrapper_progress_bar(carry, x):
+            if type(x) is tuple:
+                iter_num, *_ = x
+            else:
+                iter_num = x   
+            _update_progress_bar(iter_num)
+            result = func(carry, x)
+            return close_tqdm(result, iter_num)
 
         return wrapper_progress_bar
 
@@ -200,7 +224,7 @@ def progress_bar_scan(num_samples, message=None):
 
 ```
 
-To use it you simply add the decorator to the step function used in `lax.scan` with the number of samples as argument (and optionally the messsage to print at the beginning of the progress bar). Notice that the usage is exactly the same as for the basic progress bar described previously.
+Although this progress bar is more complicated than the previous one, you use it in exactly the same way. You simply add the decorator to the step function used in `lax.scan` with the number of samples as argument (and optionally the messsage to print at the beginning of the progress bar).
 
 ```python
 @partial(jit, static_argnums=(1,2))
