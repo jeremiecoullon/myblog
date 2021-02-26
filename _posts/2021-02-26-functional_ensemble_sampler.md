@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Ensemble samplers can sometimes work in high dimensions"
-date: 2021-02-10 08:00:00 +0000
+date: 2021-02-26 08:00:00 +0000
 categories: MCMC statistics
 ---
 
