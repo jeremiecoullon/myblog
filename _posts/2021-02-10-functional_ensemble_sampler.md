@@ -51,7 +51,7 @@ The most basic gradient free sampler defined on function space is preconditioned
 
 $$\tilde{u} = \sqrt{1-\beta^2}u + \beta \xi$$
 
-The acceptance rate of this sampler is _independent of dimension_ so is well suited for sampling function (in practice: discretisations of functions). However this sampler can mix slowly if the posterior is very different from the prior, for example if some of the components of the function are very correlated, or multimodal.
+The acceptance rate for this sampler is _independent of dimension_ so is well suited for sampling function (though in practice they're discretisations of functions). However this sampler can mix slowly if the posterior is very different from the prior, for example if some of the components of the function are very correlated or multimodal.
 
 ### FES
 
@@ -67,7 +67,7 @@ So the functional ensemble sampler is a Metropolis-within-Gibbs algorithm that a
 ### Performance
 
 We go back to the advection equation and try out the algorithm.
-Given the equation $$\rho_t + c\rho_x = 0$$, the inverse problem consists of inferring the wave speed $$c$$ and initial conditions $$\rho_0$$ from 9 noisy observations of _flow_ $$q$$. These observations come from equally spaced detectors at several time points. We emphasise that we observe flow data (not density) as described in the data model in the [previous section](#a-motivational-problem). We discretise the initial condition $$\rho_0$$ using 200 equally spaced points, which we note is a dimension where ensemble methods would usually fail.
+Given the equation $$\rho_t + c\rho_x = 0$$, the inverse problem consists of inferring the wave speed $$c$$ and initial conditions $$\rho_0$$ from 9 noisy observations of _flow_ $$q$$. These observations come from equally spaced detectors at several time points. We discretise the initial condition $$\rho_0$$ using 200 equally spaced points, which we note is a dimension where ensemble methods would usually fail.
 
 
 <!-- We run FES with $$L=100$$ walkers and try different values of the truncation parameter: $$M \in \{0,1,5,10,20\}$$. We note that setting $$M=0$$ corresponds to using AIES for the wave speed $$c$$ and pCN for the initial condition. -->
@@ -76,21 +76,20 @@ We compare FES to a standard pCN sampler which uses the following joint update:
 - Gaussian proposals for the wave speed $$c$$
 - pCN for the initial condition $$\rho_0(x)$$
 
-<!-- We run the samplers and show the ACF plots for the wave speed and the coefficient of the first eigenfunction in figure 2 below. The coefficient of the first eigenfunction corresponds to the first parameter in the new low-dimensional basis. -->
 
-We run the samplers and find that the ensemble sampler can be up to two orders of magnitude faster than pCN (in terms of IATs). We also find that there's an optimal value of the truncation parameter $$M$$ to choose to get the fastest possible mixing. You can find details of this study in the [paper](https://arxiv.org/pdf/2010.15181.pdf).
+We run the samplers and find that the ensemble sampler can be up to two orders of magnitude faster than pCN (in terms of IATs). We also find that there's an optimal value of the truncation parameter $$M$$ to choose to get the fastest possible mixing. You can find details of this study in the [paper](https://arxiv.org/pdf/2010.15181.pdf) in section 4.1.
 
-To understand why the posterior was so challenging for a simple random walk, we plot in figure 2 below samples from $$\rho_0$$ conditioned on three values of the wave speed $$c$$.
+To understand why the posterior was so challenging for a simple random walk, we plot in figure 2 samples from $$\rho_0$$ conditioned on three values of the wave speed $$c$$.
 
 <figure class="post_figure">
   <img src="/assets/FES_post/advection_conditional_c.png" height="100%">
   <figcaption>Figure 2: Samples of the initial conditions given three values of the wave speed c.</figcaption>
 </figure>
 
-This figure reveals the strong negative correlation between the wave speed and the mean of $$\rho_0$$. This correlation between the two parameters can also be understood from the data model from a [previous section](#a-motivational-problem).  Since the pCN sampler does not account for this correlation structure, large pCN updates are highly unlikely to be accepted and the sampler is slow. In contrast, FES adapts to the correlation structure, eliminating the major bottleneck in the sampling.
-<!-- We can see that the ensemble sampler can be up to two orders of magnitude faster than pCN. We can also see that there's an optimal value of $$M$$ to choose to get the fastest possible mixing. -->
+This figure reveals the strong negative correlation between the wave speed and the mean of $$\rho_0$$. This correlation between the two parameters can be understood from the solution of the PDE for flow as described [earlier](#a-motivational-problem): $$q(x, t) = c\rho_0(x-ct)$$. If the wave speed $$c$$ increases, the mean of $$\rho_0$$ must decrease to keep flow at the detectors approximately constant (and vice-versa). Since the pCN sampler does not account for this correlation structure, large pCN updates are highly unlikely to be accepted and the sampler is slow. In contrast, FES adapts to the correlation structure, eliminating the major bottleneck in the sampling.
 
-<!-- Our [paper](https://arxiv.org/pdf/2010.15181.pdf) has more details of this experiments and discussions about the performance and limitations of the sampler. -->
+<!-- We emphasise that we observe flow data (not density) as described in the data model in the [previous section](#a-motivational-problem). -->
+
 
 # Discussion
 
@@ -102,7 +101,7 @@ However, it can be unhelpful to build our mental models of difficult concepts - 
 
 ### High-dimensional distributions
 
-Here are many ways in which high dimensional distributions might be different from a spherical Gaussian which we can use to help with sampling. One way is that there might exist a low dimensional subspace that represents most of the "interesting bits" of the posterior. The rest of the space (the complementary subspace) is then relatively unaffected by the likelihood and therefore acts like the prior. This is similar to the idea behind PCA where the data mainly lives on a low dimensional subspace.
+There are many ways in which high dimensional distributions might be different from a spherical Gaussian which we can use to help with sampling. One way is that there might exist a low dimensional subspace that represents most of the "interesting bits" of the posterior. The rest of the space (the complementary subspace) is then relatively unaffected by the likelihood and therefore acts like the prior. This is similar to the idea behind PCA where the data mainly lives on a low dimensional subspace.
 
 In our [inverse problem](#a-motivational-problem) involving functional parameters, the prior gives a natural way to find this low dimensional subspace. This is because the Gaussian process prior imposes a lot of structure on the parameter which allows the infinite dimensional problem to be well posed.
 
@@ -114,4 +113,4 @@ Making MCMC work is about finding a good parametrisation. HMC uses Hamilton's eq
 
 If you don't have gradients then ensemble methods can be a good solution (example: the [emcee](https://emcee.readthedocs.io/en/stable/) package). However if the dimension is too high then these will break down as discussed in Bob Carpenter's [post](https://statmodeling.stat.columbia.edu/2017/03/15/ensemble-methods-doomed-fail-high-dimensions/). Thankfully, this is not the end of the road for ensemble samplers! You'll then need to think about your problem to identify natural groupings of parameters to apply your gradient-free sampler to. In this post I went over a practical way to do this in the case of infinite-dimensional inverse problems, yielding a simple but powerful gradient-free ensemble sampler defined on function spaces.
 
-_Thanks to [Robert J Webber](https://cims.nyu.edu/~rw2515/) for useful feedback on this post_
+_Thanks to [Robert J Webber](https://cims.nyu.edu/~rw2515/) and [Bob Carpenter](https://bob-carpenter.github.io/) for useful feedback on this post_
