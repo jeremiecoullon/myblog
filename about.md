@@ -31,6 +31,6 @@ Other projects:
 - [The Art of Toastie](https://www.instagram.com/jeremie.coullon/)
 
 Research:
-- Coullon, J., Webber, R.J. Ensemble sampler for infinite-dimensional inverse problems . Stat Comput 31, 28 (2021). [arXiv](https://arxiv.org/abs/2010.15181)
-- MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [arXiv](https://arxiv.org/abs/2001.02013)
+- Ensemble sampler for infinite-dimensional inverse problems. [[Statistics and Computing, 2021]](https://link.springer.com/article/10.1007/s11222-021-10004-y) [[arXiv]](https://arxiv.org/abs/2010.15181)
+- MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [[arXiv]](https://arxiv.org/abs/2001.02013)
 - [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
