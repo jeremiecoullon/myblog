@@ -13,11 +13,18 @@ comments: false
 I play gypsy jazz, write code, and like computational stats & machine learning.</p>
 </div>
 
+
+**Research:**
+- Stochastic Gradient MCMC with Multi-Armed Bandit Tuning [[arXiv]](https://arxiv.org/abs/2105.13059)
+- Ensemble sampler for infinite-dimensional inverse problems. [[Statistics and Computing, 2021]](https://link.springer.com/article/10.1007/s11222-021-10004-y) [[arXiv]](https://arxiv.org/abs/2010.15181)
+- MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [[arXiv]](https://arxiv.org/abs/2001.02013)
+- [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
+
+
 **Tech stack I tend to use:**
 
 - *Science:* Python/Numpy, JAX, Julia, S3, EC2
 - *Web development:* Django, React, Heroku, S3, Netlify, EC2
-
 
 
 **Music related projects:**
@@ -29,12 +36,6 @@ I play gypsy jazz, write code, and like computational stats & machine learning.<
 **Other projects:**
 - [Knowitwall](https://knowitwall.com): public engagement magazine based at UCL
 - [The Art of Toastie](https://www.instagram.com/jeremie.coullon/)
-
-**Research:**
-- Stochastic Gradient MCMC with Multi-Armed Bandit Tuning [[arXiv]](https://arxiv.org/abs/2105.13059)
-- Ensemble sampler for infinite-dimensional inverse problems. [[Statistics and Computing, 2021]](https://link.springer.com/article/10.1007/s11222-021-10004-y) [[arXiv]](https://arxiv.org/abs/2010.15181)
-- MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [[arXiv]](https://arxiv.org/abs/2001.02013)
-- [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
 
 **Meet:**
 
