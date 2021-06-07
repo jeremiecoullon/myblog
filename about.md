@@ -8,7 +8,7 @@ comments: false
 
 
 <div>
-<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I'm doing a postdoc at Lancaster University with <a href="http://www.lancs.ac.uk/~nemeth/">Chris Nemeth</a> in scalable Bayesian inference. I did PhD in computational statistics at UCL with <a href="https://www.ucl.ac.uk/statistics/people/yvopokern">Yvo Pokern</a>.
+<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I'm doing a postdoc at Lancaster University with <a href="http://www.lancs.ac.uk/~nemeth/">Chris Nemeth</a> in scalable Bayesian inference. Before that I did a PhD in computational statistics at UCL with <a href="https://www.ucl.ac.uk/statistics/people/yvopokern">Yvo Pokern</a>.
 
 I play gypsy jazz, write code, and like computational stats & machine learning.</p>
 </div>
