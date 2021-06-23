@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Early Monte Carlo methods - Part 2: the Metropolis sampler"
-date: 2021-06-07 08:00:00 +0000
+date: 2021-06-23 08:00:00 +0000
 categories: history MCMC statistics
 ---
 
