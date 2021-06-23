@@ -124,4 +124,4 @@ My guess is that either the CLT was too obvious to mention, or that it was hard 
 We saw how Monte Carlo methods took off in the 1940s and that a lot of these new methods and applications were presented in the 1949 conference. In my [next post]({% post_url 2021-05-28-early_Monte_Carlo_Metropolis_1953 %}) I'll go over the classic 1953 paper on the Metropolis sampler and give some details of the MANIAC computer.
 
 
-_Thanks to [Christian Robert](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/robert/) for useful feedback on this post_
+_Thanks to [Gael Martin](https://users.monash.edu.au/~gmartin/) and [Christian Robert](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/robert/) for useful feedback on this post_
