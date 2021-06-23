@@ -5,7 +5,7 @@ date: 2021-06-23 08:00:00 +0000
 categories: history MCMC statistics
 ---
 
-This post is the first of a two-part series on early Monte Carlo methods from the 1940s and 1950s. Although Monte Carlo methods had been previously hinted at (for example [Buffon's needle](https://en.wikipedia.org/wiki/Buffon%27s_needle_problem)), these methods only started getting serious attention in the 1940s with the development of fast computers. In 1949 a conference on Monte Carlo was held in Los Angeles in which the participants - many of them legendary mathematicians, physicists, and statisticians - shared their work involving Monte Carlo methods. It can be enlightening to review this research today to understand what issues these researchers were grappling with. In this post I'll give a brief overview on computing and Monte Carlo in the 1940s, and then discuss some of the talks from this 1949 conference. In the [next post]({% post_url 2021-05-28-early_Monte_Carlo_Metropolis_1953 %}) I'll go over the classic 1953 paper on the Metropolis sampler and give some details of the MANIAC computer.
+This post is the first of a two-part series on early Monte Carlo methods from the 1940s and 1950s. Although Monte Carlo methods had been previously hinted at (for example [Buffon's needle](https://en.wikipedia.org/wiki/Buffon%27s_needle_problem)), these methods only started getting serious attention in the 1940s with the development of fast computers. In 1949 a conference on Monte Carlo was held in Los Angeles in which the participants - many of them legendary mathematicians, physicists, and statisticians - shared their work involving Monte Carlo methods. It can be enlightening to review this research today to understand what issues these researchers were grappling with. In this post I'll give a brief overview on computing and Monte Carlo in the 1940s, and then discuss some of the talks from this 1949 conference. In the [next post]({% post_url 2021-06-23-early_Monte_Carlo_Metropolis_1953 %}) I'll go over the classic 1953 paper on the Metropolis sampler and give some details of the MANIAC computer.
 
 
 # Historical context: Monte Carlo in the 1940s
@@ -121,7 +121,7 @@ My guess is that either the CLT was too obvious to mention, or that it was hard 
 
 ### Conclusion
 
-We saw how Monte Carlo methods took off in the 1940s and that a lot of these new methods and applications were presented in the 1949 conference. In my [next post]({% post_url 2021-05-28-early_Monte_Carlo_Metropolis_1953 %}) I'll go over the classic 1953 paper on the Metropolis sampler and give some details of the MANIAC computer.
+We saw how Monte Carlo methods took off in the 1940s and that a lot of these new methods and applications were presented in the 1949 conference. In my [next post]({% post_url 2021-06-23-early_Monte_Carlo_Metropolis_1953 %}) I'll go over the classic 1953 paper on the Metropolis sampler and give some details of the MANIAC computer.
 
 
 _Thanks to [Gael Martin](https://users.monash.edu.au/~gmartin/) and [Christian Robert](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/robert/) for useful feedback on this post_

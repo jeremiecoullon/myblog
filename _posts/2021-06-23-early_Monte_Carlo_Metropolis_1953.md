@@ -5,7 +5,7 @@ date: 2021-06-23 08:00:00 +0000
 categories: history MCMC statistics
 ---
 
-This post is the second of a two-part series on early Monte Carlo methods from the 1940s and 1950s. In my [previous post]({% post_url 2021-05-28-early_Monte_Carlo_1949_conference %}) I gave an overview of Monte Carlo methods in the 40s and focused on the 1949 conference in Los Angeles. In this post I'll go over the classic paper [_Equation of State Calculations by Fast Computing Machines_](https://bayes.wustl.edu/Manual/EquationOfState.pdf) (1953) by Nick Metropolis and co-authors. I'll give an overview of the paper and its main results and then give some context about how it was written. I'll then delve into some details of how the MANIAC computer worked to give an idea of what it must have been like to write algorithms such as MCMC on it.
+This post is the second of a two-part series on early Monte Carlo methods from the 1940s and 1950s. In my [previous post]({% post_url 2021-06-23-early_Monte_Carlo_1949_conference %}) I gave an overview of Monte Carlo methods in the 40s and focused on the 1949 conference in Los Angeles. In this post I'll go over the classic paper [_Equation of State Calculations by Fast Computing Machines_](https://bayes.wustl.edu/Manual/EquationOfState.pdf) (1953) by Nick Metropolis and co-authors. I'll give an overview of the paper and its main results and then give some context about how it was written. I'll then delve into some details of how the MANIAC computer worked to give an idea of what it must have been like to write algorithms such as MCMC on it.
 
 
 # The classic Metropolis sampler paper
@@ -29,7 +29,7 @@ After an overview of the problem they introduce the Metropolis sampler: for each
   <figcaption>Figure 1: Description of the Metroplis sampler</figcaption>
 </figure>
 
-The algorithm was coded up to run on the MANIAC computer, and took around 3 minutes to update all 242 particles (which is obviously slow by today's standards). Note that they used the Middle Square method to generate the uniform random numbers in the proposal distribution and the accept-reject step. This random number generator has some issues but is fast and therefore much more convenient than reading in random numbers from a table (this method was introduced in the 1949 conference and is discussed in my [previous post]({% post_url 2021-05-28-early_Monte_Carlo_1949_conference %})).
+The algorithm was coded up to run on the MANIAC computer, and took around 3 minutes to update all 242 particles (which is obviously slow by today's standards). Note that they used the Middle Square method to generate the uniform random numbers in the proposal distribution and the accept-reject step. This random number generator has some issues but is fast and therefore much more convenient than reading in random numbers from a table (this method was introduced in the 1949 conference and is discussed in my [previous post]({% post_url 2021-06-23-early_Monte_Carlo_1949_conference %})).
 
 They then justify the new sampler by giving an argument for how it will converge to the target distribution: they show that the system is ergodic and that detailed balanced is satisfied. Finally, they run experiments and estimate the pressure of a system of particles. They compare the results to two standard analytic approximations, and find that the MCMC results agree with the approximations in the parameter region where they are known to be accurate.
 
