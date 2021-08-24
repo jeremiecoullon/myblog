@@ -29,7 +29,7 @@ The setup of the logistic regression model is the same as the one from this [SG-
 
 - $$y_i = \text{Bernoulli}(p_i)$$ with $$p_i = \frac{1}{ 1+\exp(-\theta^T x_i)}$$
 - Prior: $$\theta \sim \mathcal{N}(0, \Sigma_{\theta})$$ with $$\Sigma_{\theta} = 10\textbf{I}_d$$
-- Likelihood: $$ p(X,y \mid \theta) = \Pi^N p_i^{y_i}(1-p_i)^{y_i} $$
+- Likelihood: $$ p(X,y \mid \theta) = \Pi^N p_i^{y_i}(1-p_i)^{1-y_i} $$
 
 
 
