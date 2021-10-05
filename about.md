@@ -21,16 +21,20 @@ I play gypsy jazz, write code, and like computational stats & machine learning.<
 - [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
 
 
+**Software I wrote / contibuted to:**
+
+- [SGMCMCJax](https://github.com/jeremiecoullon/SGMCMCJax): lightweight library of stochastic gradient MCMC algorithms written in JAX
+- [The DjangoVerse](https://www.londondjangocollective.com/djangoverse/): interactive data visualisation of Gypsy Jazz musicians around the world
+
+
 **Tech stack I tend to use:**
 
 - *Science:* Python/Numpy, JAX, Julia, S3, EC2
 - *Web development:* Django, React, Heroku, S3, Netlify, EC2
 
-
 **Music related projects:**
 - [Latchepen](https://www.latchepen.com/): Gypsy jazz quartet
 - [London Django Collective](https://londondjangocollective.com): Collective of a few gypsy jazz players in London. Here's a [video](https://www.youtube.com/watch?v=olV9ecNxin8) of one of my tunes.
-- [The DjangoVerse](https://www.londondjangocollective.com/djangoverse/): interactive data visualisation of Gypsy Jazz musicians around the world
 - [Gypsy Jazz memes](https://www.instagram.com/gypsyjazzmemes/)
 
 **Other projects:**
