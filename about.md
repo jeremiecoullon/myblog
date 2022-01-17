@@ -8,14 +8,14 @@ comments: false
 
 
 <div>
-<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I'm doing a postdoc at Lancaster University with <a href="http://www.lancs.ac.uk/~nemeth/">Chris Nemeth</a> in scalable Bayesian inference. Before that I did a PhD in computational statistics at UCL with <a href="https://www.ucl.ac.uk/statistics/people/yvopokern">Yvo Pokern</a>.
+<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I'm at statistical scientist at <a href="https://cervest.earth/">Cervest</a> working on Bayesian modelling of Earth's climate. Before that I did a postdoc at Lancaster University with <a href="http://www.lancs.ac.uk/~nemeth/">Chris Nemeth</a> in scalable Bayesian inference, and a PhD in computational statistics at UCL with <a href="https://www.ucl.ac.uk/statistics/people/yvopokern">Yvo Pokern</a>.
 
 I play gypsy jazz, write code, and like computational stats & machine learning.</p>
 </div>
 
 
 **Research:**
-- Efficient and Generalizable Tuning Strategies for Stochastic Gradient MCMC [[arXiv]](https://arxiv.org/abs/2105.13059)
+- Efficient and Generalizable Tuning Strategies for Stochastic Gradient MCMCerv [[arXiv]](https://arxiv.org/abs/2105.13059)
 - Ensemble sampler for infinite-dimensional inverse problems. [[Statistics and Computing, 2021]](https://link.springer.com/article/10.1007/s11222-021-10004-y) [[arXiv]](https://arxiv.org/abs/2010.15181)
 - MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [[arXiv]](https://arxiv.org/abs/2001.02013)
 - [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
