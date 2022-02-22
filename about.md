@@ -15,9 +15,9 @@ I play gypsy jazz, write code, and like computational stats & machine learning.<
 
 
 **Research:**
-- Efficient and Generalizable Tuning Strategies for Stochastic Gradient MCMCerv [[arXiv]](https://arxiv.org/abs/2105.13059)
+- MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [[Data-Centric Engineering, 2022]](https://www.cambridge.org/core/journals/data-centric-engineering/article/markov-chain-monte-carlo-for-a-hyperbolic-bayesian-inverse-problem-in-traffic-flow-modeling/53A64484BE55E9DE7A23D5DFF75CC65D) [[arXiv]](https://arxiv.org/abs/2001.02013)
+- Efficient and Generalizable Tuning Strategies for Stochastic Gradient MCMC [[arXiv]](https://arxiv.org/abs/2105.13059)
 - Ensemble sampler for infinite-dimensional inverse problems. [[Statistics and Computing, 2021]](https://link.springer.com/article/10.1007/s11222-021-10004-y) [[arXiv]](https://arxiv.org/abs/2010.15181)
-- MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [[arXiv]](https://arxiv.org/abs/2001.02013)
 - [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
 
 
