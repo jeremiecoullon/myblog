@@ -8,6 +8,8 @@ categories: JAX programming MCMC statistics
 
 JAX allows you to write optimisers and samplers which are really fast if you use the [`scan`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.scan.html) or [`fori_loop`](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.fori_loop.html) functions. However if you write them in this way it's not obvious how to add progress bar for your algorithm. This post explains how to make a progress bar using Python's `print` function as well as using [tqdm](https://pypi.org/project/tqdm/). After briefly setting up the sampler, we first go over how to create a basic version using Python's `print` function, and then show how to create a nicer version using tqdm. You can find the code for the basic version [here](https://gist.github.com/jeremiecoullon/4ae89676e650370936200ec04a4e3bef) and the code for the tqdm version [here](https://gist.github.com/jeremiecoullon/f6a658be4c98f8a7fd1710418cca0856).
 
+_Update January 2023: this is now available in a pip-installable package: [JAX-tqdm](https://github.com/jeremiecoullon/jax-tqdm)_
+
 
 # Setup: sampling a Gaussian
 
