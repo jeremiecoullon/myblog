@@ -8,9 +8,9 @@ comments: false
 
 
 <div>
-<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I like computational stats & machine learning, writing software, and playing gypsy jazz.
+<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I'm an ML engineer with a background in computational stats & machine learning. I also play jazz / gypsy jazz and like rock climbing.
 
-Until recently I was a statistical scientist at <a href="https://cervest.earth/">Cervest</a> working on climate modelling. Before that I did a postdoc at Lancaster University with <a href="http://www.lancs.ac.uk/~nemeth/">Chris Nemeth</a> in scalable Bayesian inference, and a PhD in computational statistics at UCL with <a href="https://www.ucl.ac.uk/statistics/people/yvopokern">Yvo Pokern</a>.</p>
+I was previously a statistical scientist at <a href="https://cervest.earth/">Cervest</a> working on climate modelling. Before that I did a postdoc at Lancaster University with <a href="http://www.lancs.ac.uk/~nemeth/">Chris Nemeth</a> in scalable Bayesian inference, and a PhD in computational statistics at UCL with <a href="https://www.ucl.ac.uk/statistics/people/yvopokern">Yvo Pokern</a>.</p>
 </div>
 
 
@@ -25,6 +25,7 @@ Until recently I was a statistical scientist at <a href="https://cervest.earth/"
 **Software I wrote / contibuted to:**
 
 - [SGMCMCJax](https://github.com/jeremiecoullon/SGMCMCJax): lightweight library of stochastic gradient MCMC algorithms written in JAX
+- [JAX-tqdm](https://github.com/jeremiecoullon/jax-tqdm): add a tqdm progress bar to JAX scans and loops
 - [The DjangoVerse](https://www.londondjangocollective.com/djangoverse/): interactive data visualisation of Gypsy Jazz musicians around the world
 
 
