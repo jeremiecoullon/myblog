@@ -8,9 +8,9 @@ comments: false
 
 
 <div>
-<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I'm an ML engineer with a background in computational stats & machine learning. I also play jazz / gypsy jazz and like rock climbing.
-
-I was previously a statistical scientist at <a href="https://cervest.earth/">Cervest</a> working on climate modelling. Before that I did a postdoc at Lancaster University with <a href="http://www.lancs.ac.uk/~nemeth/">Chris Nemeth</a> in scalable Bayesian inference, and a PhD in computational statistics at UCL with <a href="https://www.ucl.ac.uk/statistics/people/yvopokern">Yvo Pokern</a>.</p>
+<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I'm a machine learning engineer at <a href="https://www.papercup.com/">Papercup</a> doing research on text-to-speech models for automatic video dubbing. I also play jazz / gypsy jazz guitar and like rock climbing.
+<br><br>
+I was previously a statistical scientist at <a href="https://cervest.earth/">Cervest</a> working on climate modelling. Before that I did a postdoc at Lancaster University in Bayesian machine learning with <a href="http://www.lancs.ac.uk/~nemeth/">Chris Nemeth</a>, and a PhD in computational statistics at UCL with <a href="https://www.ucl.ac.uk/statistics/people/yvopokern">Yvo Pokern</a>.</p>
 </div>
 
 
