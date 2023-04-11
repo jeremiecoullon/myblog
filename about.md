@@ -29,13 +29,7 @@ I was previously a statistical scientist at <a href="https://cervest.earth/">Cer
 - [The DjangoVerse](https://www.londondjangocollective.com/djangoverse/): interactive data visualisation of Gypsy Jazz musicians around the world
 
 
-**Tech stack I tend to use:**
-
-- *Science:* Python/Numpy, JAX, Julia, S3, EC2
-- *Web development:* Django, React, Heroku, S3, Netlify, EC2
-
 **Music related projects:**
-- [Latchepen](https://www.latchepen.com/): Gypsy jazz quartet
 - [London Django Collective](https://londondjangocollective.com): Collective of a few gypsy jazz players in London. Here's a [video](https://www.youtube.com/watch?v=olV9ecNxin8) of one of my tunes.
 - [Gypsy Jazz memes](https://www.instagram.com/gypsyjazzmemes/)
 
