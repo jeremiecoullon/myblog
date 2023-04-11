@@ -17,7 +17,7 @@ I was previously a statistical scientist at <a href="https://cervest.earth/">Cer
 **Research:**
 - Efficient and generalizable tuning strategies for stochastic gradient MCMC [[Statistics and Computing, 2023]](https://link.springer.com/article/10.1007/s11222-023-10233-3)
 - SGMCMCJax: a lightweight JAX library for stochastic gradient Markov chain Monte Carlo algorithms [[JOSS, 2022]](https://joss.theoj.org/papers/10.21105/joss.04113)
-- MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [[Data-Centric Engineering, 2022]](https://www.cambridge.org/core/journals/data-centric-engineering/article/markov-chain-monte-carlo-for-a-hyperbolic-bayesian-inverse-problem-in-traffic-flow-modeling/53A64484BE55E9DE7A23D5DFF75CC65D) [[arXiv]](https://arxiv.org/abs/2001.02013)
+- MCMC for a hyperbolic Bayesian inverse problem in traffic flow modelling [[Data-Centric Engineering, 2022]](https://www.cambridge.org/core/journals/data-centric-engineering/article/markov-chain-monte-carlo-for-a-hyperbolic-bayesian-inverse-problem-in-traffic-flow-modeling/53A64484BE55E9DE7A23D5DFF75CC65D)
 - Ensemble sampler for infinite-dimensional inverse problems. [[Statistics and Computing, 2021]](https://link.springer.com/article/10.1007/s11222-021-10004-y) [[arXiv]](https://arxiv.org/abs/2010.15181)
 - [PhD thesis](https://discovery.ucl.ac.uk/id/eprint/10078714/)
 
