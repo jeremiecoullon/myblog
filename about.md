@@ -8,7 +8,7 @@ comments: false
 
 
 <div>
-<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I'm a machine learning engineer at <a href="https://www.papercup.com/">Papercup</a> doing research on large generative models for speech (TTS and voice conversion) to use in dubbing. I also play jazz / gypsy jazz guitar and like rock climbing.
+<img src="/assets/Jeremie_crop_opt.jpg" class="about_image image-left"/>  <p class="about_bio">Hi, I'm Jeremie and I live in London. I'm a machine learning engineer at <a href="https://scale.com/">ScaleAI</a> building AI applications for governments. Previously I worked on large generative models for speech (TTS and voice conversion) for AI dubbing at <a href="https://www.papercup.com/">Papercup</a>. I also play jazz / gypsy jazz guitar and like rock climbing.
 <br><br>
 I was previously a statistical scientist at <a href="https://cervest.earth/">Cervest</a> working on climate modelling. Before that I did a postdoc at Lancaster University in Bayesian machine learning with <a href="http://www.lancs.ac.uk/~nemeth/">Chris Nemeth</a>, and a PhD in computational statistics at UCL with <a href="https://www.ucl.ac.uk/statistics/people/yvopokern">Yvo Pokern</a>.</p>
 </div>
